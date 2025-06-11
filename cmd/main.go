@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Robert076/validator-multirepo/internal/data"
 	"github.com/Robert076/validator-multirepo/internal/validator"
 )
 
@@ -18,21 +19,21 @@ func main() {
 			return
 		}
 
-		var name string
+		var body data.ExpectedBody
 
-		if err := json.NewDecoder(r.Body).Decode(&name); err != nil {
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 			http.Error(w, "Invalid JSON format.", http.StatusBadRequest)
-			log.Printf("%s: Expected the property `name` in the JSON, but could not find it.", serviceName)
+			log.Printf("%s: Expected decoding the request body.", serviceName)
 			return
 		}
 
-		if valid, err := validator.IsNameValid(name); err != nil {
+		if valid, err := validator.IsNameValid(body.Name); err != nil {
 			http.Error(w, "Error occured when checking if name is valid or not.", http.StatusInternalServerError)
 			log.Printf("%s: Error occured when checking if name is valid or not.", serviceName)
 			return
 		} else if !valid {
 			http.Error(w, "Name is invalid. Make sure it contains no numbers.", http.StatusBadRequest)
-			log.Printf("%s: %s is not a valid name", serviceName, name)
+			log.Printf("%s: %s is not a valid name", serviceName, body.Name)
 			return
 		}
 	})
