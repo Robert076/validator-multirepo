@@ -28,8 +28,8 @@ func main() {
 		}
 
 		if valid, err := validator.IsNameValid(body.Name); err != nil {
-			http.Error(w, "Error occured when checking if name is valid or not.", http.StatusInternalServerError)
-			log.Printf("%s: Error occured when checking if name is valid or not.", serviceName)
+			http.Error(w, "Error occured when checking if name is valid or not. ", http.StatusInternalServerError)
+			log.Printf("%s: Error occured when checking if name is valid or not. %s", serviceName, err)
 			return
 		} else if !valid {
 			http.Error(w, "Name is invalid. Make sure it contains no numbers.", http.StatusBadRequest)
